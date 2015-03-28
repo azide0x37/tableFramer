@@ -4,13 +4,14 @@ from collections import OrderedDict
 from datetime import datetime 
 
 class tableFramer:
-  def __init__(self, url, format = dataframe):
+  def __init__(self, url, dataFormat = dataframe):
     self.url = url
-    self.format = format
+    self.dataFormat = dataFormat
     
   def __call__(self):
-    headingTable = webpageSouped.find('table',,)
-    headings = headingTable.findAll('td')
+    allTable = webpageSouped.findAll('table')
+    [x.findAll('td') for x in headingTable]
+    allTableData = [y.findAll('tr') for y in [x.findAll('td') for x in headingTable]]
     
     dataTable = webpageSouped.find('table', border="0", cellpadding="4", cellspacing="2")
     rows = dataTable.findAll('tr')
@@ -20,7 +21,7 @@ class tableFramer:
     for tr in rows:
       cols = OrderedDict()
       counter = 0
-      
+    .  
       for td in cols[1:]:
         text = ''.join(td.find(text=True))
         try:
