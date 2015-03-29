@@ -19,3 +19,5 @@ class tableFramer:
             return json.dumps(OrderedDict(table_data))
         else:
             return pd.DataFrame(table_data)
+copeData('https://web.mo.gov/doc/offSearchWeb/searchOffender.do?docId=512073','json')
+print copeData()
