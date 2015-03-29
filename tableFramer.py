@@ -19,3 +19,5 @@ class tableFramer:
             return json.dumps(OrderedDict(table_data))
         else:
             return pd.DataFrame(table_data)
+
+tableFramer(
