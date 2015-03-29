@@ -20,4 +20,5 @@ class tableFramer:
         else:
             return pd.DataFrame(table_data)
 
-tableFramer(
+copeData = tableFramer('https://web.mo.gov/doc/offSearchWeb/searchOffender.do?docId=512073','json')
+print copeData()
