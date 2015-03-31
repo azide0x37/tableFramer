@@ -1,4 +1,3 @@
-import urllib2
 import requests
 import json
 import pandas as pd 
@@ -8,26 +7,17 @@ from collections import OrderedDict
 class tableFramer:
     def __init__(self, url, dataFormat = 'dataframe'):
         self.url = url
-        self.dataFormat = dataFormat
+        self.dataFormat = dataFormat.lower()
         self.headers = {'User-Agent': 'Mozilla/5.0'}
-        
-        #request conversion template
-        self.response = requests.get(url, headers=headers)
-        
-        #legacy urllib2
-        """
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-        self.response = opener.open(self.url)
-        """
-    
+        self.response = requests.get(url, headers=self.headers)
+
     def __call__(self):
         souped = BeautifulSoup(self.response.text)
         tables = souped.findAll('table')
         table_data = [[cell.text for cell in row("td")] for row in tables]
         
-        if self.dataFormat.lower() == 'json':
-            return json.dumps(OrderedDict(table_data))
+        if self.dataFormat == 'json':
+            return json.dumps(table_data)
         else:
             return pd.DataFrame(table_data)
 
