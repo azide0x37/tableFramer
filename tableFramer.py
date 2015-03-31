@@ -13,10 +13,27 @@ class tableFramer:
 
     def __call__(self):
         souped = BeautifulSoup(self.response.text)
+        
+        headerTable = souped.find('thead')
+        colNames = headerTable.findAll('th')
         table = souped.find('table', summary="Table listing details of the accident.")
+        rows = table.findAll('tr')
         dataset = []
         
-        dataset = {[x for x in xrange(0, len(table.findAll('tr')))]:[[text.find(text=True) for text in row.findAll('td')] for row in table.findAll('tr')] for data in table.findAll('tr')}
+        for tr in rows:
+            cols = tr.findAll('td')
+            row_data = OrderedDict()
+            counter = 0
+
+            for td in cols[1:]:
+                text = ''.join(td.find(text=True))
+                try:
+                    row_data[self.colNames[counter]] = text
+                    counter += 1
+                except:
+                    counter = 0
+                    continue
+            dataset.append(row_data)
 
         if self.dataFormat != 'dataframe':
             return json.dumps(dataset, indent=4, separators=(',',':'))
