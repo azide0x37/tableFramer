@@ -13,8 +13,17 @@ class tableFramer:
 
     def __call__(self):
         souped = BeautifulSoup(self.response.text)
-        tables = souped.findAll('table')
-        table_data = [[cell.text for cell in row("td")] for row in tables]
+        table = souped.find('table', summary="Table listing details of the accident.")
+        #table_data = [[cell.text for cell in row("td")] for row in table]
+        column_names = [x for x in xrange(0, len(table.findAll('tr')))]
+        dataset = []
+        columns = [[{column_names[int(text)]:text.find(text=True)} for text in row.findAll('td')] for row in table.findAll('tr')]
+        
+        
+            
+        
+        
+        
         
         if self.dataFormat != 'dataframe':
             return json.dumps(table_data[1])
