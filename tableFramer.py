@@ -16,10 +16,10 @@ class tableFramer:
         tables = souped.findAll('table')
         table_data = [[cell.text for cell in row("td")] for row in tables]
         
-        if self.dataFormat == 'json':
-            return json.dumps(table_data)
+        if self.dataFormat != 'dataframe':
+            return json.dumps(table_data[1])
         else:
             return pd.DataFrame(table_data)
 
-copeData = tableFramer('https://web.mo.gov/doc/offSearchWeb/searchOffender.do?docId=512073')
+copeData = tableFramer('http://www.mshp.dps.missouri.gov/HP68/SearchAction','json')
 print copeData()
