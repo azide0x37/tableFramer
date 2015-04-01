@@ -1,25 +1,42 @@
 import requests
-import json
-import pandas as pd 
+import json 
 from bs4 import BeautifulSoup
 from collections import OrderedDict 
 
 class tableFramer:
-    def __init__(self, url, dataFormat = 'dataframe'):
+    def __init__(self, url):
         self.url = url
-        self.dataFormat = dataFormat.lower()
-        self.headers = {'User-Agent': 'Mozilla/5.0'}
-        self.response = requests.get(url, headers=self.headers)
+        self.response = requests.get(url, headers = {'User-Agent': 'Mozilla/5.0'})
 
     def __call__(self):
         souped = BeautifulSoup(self.response.text)
-        tables = souped.findAll('table')
-        table_data = [[cell.text for cell in row("td")] for row in tables]
         
-        if self.dataFormat != 'dataframe':
-            return json.dumps(table_data[1])
-        else:
-            return pd.DataFrame(table_data)
+        tableHead = souped.find('thead')
+        colNames = tableHead.findAll('th')
+        print "colNames", colNames
 
-copeData = tableFramer('http://www.mshp.dps.missouri.gov/HP68/SearchAction','json')
-print copeData()
+        table = souped.find('table', summary = "Table listing details of the accident.")
+        rows = table.findAll('tr', class_ = "infoCell")
+        print "rows", rows
+        
+        dataset = []
+
+        for tr in rows:
+            cols = tr.findAll('td')
+            rowData = OrderedDict()
+            counter = 1
+
+            for td in cols[1:]:
+                text = ''.join(td.find(text=True))
+                try:
+                    rowData[colNames[counter]] = text
+                    counter += 1
+                except:
+                    counter = 0
+                    continue
+            dataset.append(rowData)
+
+        return json.dumps(dataset)#, indent=4, separators=(',',':'))
+        
+crashData = tableFramer('http://www.mshp.dps.missouri.gov/HP68/SearchAction')
+print crashData()
