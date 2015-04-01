@@ -36,7 +36,7 @@ class tableFramer:
                     continue
             dataset.append(rowData)
 
-        return json.dumps(dataset, indent=4, separators=(',',':'))
+        return json.dumps(dataset)#, indent=4, separators=(',',':'))
         
 crashData = tableFramer('http://www.mshp.dps.missouri.gov/HP68/SearchAction')
 print crashData()
